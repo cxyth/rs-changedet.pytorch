@@ -1,0 +1,55 @@
+
+mode: "train"    # "train", "infer"
+run_name: ""
+run_dir: "./runs/"
+comment: ""    # 其他备注信息
+
+
+dataset: {
+  "name": "levir",
+  "train_dirs": "../datasets/LEVIR-CD/train_512",
+  "val_dirs": "../datasets/LEVIR-CD/val",
+  cls_info: {
+    unchange: 0,
+    change: 1
+  },
+  class_colors: {},
+  ignore_index: 255,
+  resample: false
+}
+
+
+network: {
+  type: "siamese",    # "custom", ...
+  arch: "Unet",
+  encoder: "resnet101",
+  in_size: 512,
+  in_channel: 3,
+  out_channel: 2,
+  pretrained: "imagenet"
+}
+
+optimizer: {
+  type: "AdamW",
+  lr: 0.00001,
+#  betas: [0.9, 0.999],
+  weight_decay: 0.001
+}
+
+train: {
+  epochs: 21, # 3, 9, 21, 45, 93...
+  batch_size: 4,
+  smoothing: 0.1,
+  save_inter: -1,  # 保存间隔(epoch), 小于1表示不备份
+  log_inter: 50,   # 显示迭代间隔(batch)
+  plot: true
+}
+
+eval: {
+  ckpt_name: "checkpoint-best.pth",    # full path = os.path.join(run_dir, run_name, "ckpt", ckpt_name)
+  test_dir: "../datasets/LEVIR-CD/test",
+  save_dir: "test",   # full path = os.path.join(run_dir, save_dir, "results")
+  batch_size: 4,
+  tta: false,
+}
+
